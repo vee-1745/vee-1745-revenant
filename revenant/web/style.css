@@ -1,0 +1,150 @@
+@font-face { font-family: "Pirata One"; src: url("/fonts/pirata-one-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "IM Fell English"; src: url("/fonts/im-fell-english-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "IM Fell English"; src: url("/fonts/im-fell-english-latin-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url("/fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url("/fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+
+:root {
+  --night: #150b2b;
+  --night-2: #21104a;
+  --plum: #3b1a5e;
+  --bone: #f3e9d2;
+  --bone-dim: #c9bddb;
+  --marigold: #ff9a1f;
+  --magenta: #e0307a;
+  --teal: #19b5a5;
+  --ink: #1a0f2e;
+  --spirit: #ffc233;
+  --display: "Pirata One", Georgia, serif;
+  --voice: "IM Fell English", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  color: var(--bone);
+  font-family: var(--voice);
+  line-height: 1.5;
+  background: radial-gradient(120% 70% at 50% -10%, #3a1c7a 0%, var(--night-2) 40%, var(--night) 78%) fixed var(--night);
+  overflow-x: hidden;
+}
+:focus-visible { outline: 3px solid var(--marigold); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+#petals { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+
+/* papel picado */
+#banner { position: relative; z-index: 2; height: 82px; overflow: hidden; display: flex; justify-content: center; gap: 6px; padding-top: 6px; }
+#banner::before { content: ""; position: absolute; left: 0; right: 0; top: 5px; height: 2px; background: rgba(243, 233, 210, .38); }
+.flag { flex: none; transform-origin: 50% 0; animation: sway 4.6s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -.35s); }
+.flag svg { display: block; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .35)); }
+
+/* header */
+.top { position: relative; z-index: 2; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: .75rem 2rem; max-width: 1280px; margin: 0 auto; padding: .9rem clamp(16px, 3vw, 40px) 1.1rem; }
+.top h1 { margin: 0; font: 400 clamp(2.8rem, 6vw, 4.2rem) / .9 var(--display); letter-spacing: .01em; text-shadow: 0 0 26px color-mix(in srgb, var(--spirit) 60%, transparent); transition: text-shadow .6s; }
+.tagline { margin: .4rem 0 0; font-style: italic; color: var(--bone-dim); font-size: 1.15rem; max-width: 36ch; }
+.status { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; font: 500 .78rem var(--mono); color: var(--bone-dim); }
+.status li { display: flex; align-items: center; gap: .45rem; }
+.status li::before { content: ""; flex: none; width: .6rem; height: .6rem; border-radius: 50%; background: var(--bone-dim); opacity: .6; }
+.status li[data-state="ok"]::before { background: var(--teal); box-shadow: 0 0 8px var(--teal); opacity: 1; }
+.status li[data-state="warn"] { color: var(--marigold); }
+.status li[data-state="warn"]::before { background: var(--marigold); box-shadow: 0 0 8px var(--marigold); opacity: 1; }
+.status li[data-state="bad"] { color: #ff7aa8; }
+.status li[data-state="bad"]::before { background: var(--magenta); box-shadow: 0 0 8px var(--magenta); opacity: 1; }
+
+/* layout */
+.room { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(320px, 1fr); grid-template-areas: "stage chat" "tombs chat"; gap: 1rem 2rem; max-width: 1280px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 40px) 40px; align-items: start; }
+
+/* the niche */
+.stage { grid-area: stage; position: relative; min-height: clamp(440px, calc(100vh - 380px), 620px); overflow: hidden; border-radius: 230px 230px 12px 12px / 190px 190px 12px 12px; box-shadow: inset 0 0 0 2px rgba(255, 154, 31, .55), 0 18px 50px rgba(0, 0, 0, .45);
+  background: radial-gradient(72% 58% at 50% 40%, color-mix(in srgb, var(--spirit) 28%, transparent), transparent 72%), linear-gradient(#1d0e3d, #110725); transition: background .6s; }
+.spirit-wrap { position: absolute; z-index: 1; left: 50%; top: 2%; height: 80%; aspect-ratio: 240 / 370; transform: translateX(-50%); }
+.spirit-svg { display: block; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 26px color-mix(in srgb, var(--spirit) 55%, transparent)); }
+.altar { position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; }
+.altar svg { display: block; width: 78%; height: auto; margin: 0 auto; }
+.fog { position: absolute; z-index: 1; left: -25%; right: -25%; bottom: 16%; height: 34%; pointer-events: none; background: radial-gradient(closest-side, rgba(226, 208, 255, .2), transparent); filter: blur(16px); animation: drift 24s ease-in-out infinite alternate; }
+.fog-b { bottom: 8%; height: 28%; animation-duration: 31s; animation-direction: alternate-reverse; opacity: .8; }
+
+/* spirit animation */
+.bob { animation: bob 4.4s ease-in-out infinite; }
+.eye { transform-box: fill-box; transform-origin: center; animation: blink 5.8s infinite; }
+.eye + .eye { animation-delay: .02s; }
+.pupil { transform: translate(calc(var(--px, 0) * 1px), calc(var(--py, 0) * 1px)); transition: transform .14s ease-out, fill .3s; }
+.brow { transform-box: fill-box; transform-origin: center; transition: transform .25s; }
+.mouth { transform-box: fill-box; transform-origin: center; transform: scaleY(.55); transition: transform .09s ease-out; }
+.arm { transform-box: fill-box; transform-origin: 50% 50%; }
+.sigil { transform-box: fill-box; transform-origin: 50% 100%; animation: wiggle 1.7s ease-in-out infinite; animation-delay: calc(var(--d) * -.31s); }
+.paren { animation: orbit 5s ease-in-out infinite alternate; }
+.paren.r { animation-delay: -2.5s; }
+.is-talking .mouth { transform: scaleY(var(--open, 1.8)); }
+.is-talking .arm.l { animation: flutter-l .45s ease-in-out infinite alternate; }
+.is-talking .arm.r { animation: flutter-r .45s ease-in-out infinite alternate; }
+.is-angry .brow.l { transform: rotate(24deg); }
+.is-angry .brow.r { transform: rotate(-24deg); }
+.is-angry .pupil { fill: #d1103a; }
+.is-angry .shake { animation: shake .5s linear 2; }
+.spirit-wrap.summon { animation: summon .9s cubic-bezier(.2, .8, .2, 1); }
+.flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker 1.3s ease-in-out infinite; animation-delay: calc(var(--d) * -.37s); }
+.glow { animation: glow 1.7s ease-in-out infinite alternate; animation-delay: calc(var(--d) * -.5s); }
+
+/* tombstones */
+.tombs { grid-area: tombs; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .6rem; }
+.tomb { --tomb: var(--bone); display: flex; flex-direction: column; align-items: center; gap: .1rem; padding: .85rem .3rem .6rem; color: var(--bone); background: linear-gradient(#3b1a5e, #2a1250); border: 2px solid rgba(243, 233, 210, .25); border-radius: 46px 46px 6px 6px; cursor: pointer; font: inherit; transition: transform .2s, border-color .2s, box-shadow .2s; }
+.tomb:hover { border-color: var(--tomb); }
+.tomb[aria-pressed="true"] { border-color: var(--tomb); transform: translateY(-4px); box-shadow: 0 0 0 1px var(--tomb), 0 8px 24px color-mix(in srgb, var(--tomb) 40%, transparent); }
+.tomb .glyph { font: 500 1.5rem / 1 var(--mono); color: var(--tomb); }
+.tomb .name { font: 400 1.25rem / 1.1 var(--display); letter-spacing: .02em; }
+.tomb .year { font: 400 .78rem var(--mono); color: var(--bone-dim); }
+
+/* conversation */
+.chat { grid-area: chat; display: flex; flex-direction: column; height: clamp(480px, calc(100vh - 262px), 780px); min-height: 0; background: rgba(14, 6, 32, .74); border: 1px solid rgba(243, 233, 210, .16); border-radius: 16px; backdrop-filter: blur(6px); }
+.log { flex: 1; min-height: 0; overflow-y: auto; padding: 1.1rem 1.1rem .25rem; scroll-behavior: smooth; }
+.msg { margin: 0 0 1.05rem; max-width: 94%; }
+.msg.user { margin-left: auto; width: fit-content; font: 400 .9rem / 1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; padding: .55rem .8rem; background: rgba(243, 233, 210, .08); border: 1px solid rgba(243, 233, 210, .2); border-radius: 12px 12px 2px 12px; }
+.msg.spirit .who { font: 400 1.2rem / 1.2 var(--display); color: var(--spirit); letter-spacing: .02em; }
+.msg.spirit .body { font-size: 1.24rem; line-height: 1.55; overflow-wrap: anywhere; }
+.msg.spirit .body p { margin: 0 0 .5rem; }
+.msg.spirit .body pre { margin: .4rem 0 .6rem; padding: .6rem .8rem; overflow-x: auto; font: 400 .82rem / 1.45 var(--mono); color: var(--bone); background: rgba(0, 0, 0, .4); border-left: 3px solid var(--spirit); border-radius: 0 8px 8px 0; }
+.msg.spirit.streaming .body > :last-child::after, .msg.spirit.streaming .body:empty::after { content: "▍"; margin-left: 2px; color: var(--spirit); animation: caret 1s steps(1) infinite; }
+.msg .meta { margin-top: .1rem; font: 400 .72rem var(--mono); color: var(--bone-dim); opacity: .85; }
+.note { margin: 0 0 1.05rem; padding: .6rem .8rem; font: 400 .85rem / 1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; background: rgba(224, 48, 122, .12); border-left: 3px solid var(--magenta); border-radius: 0 8px 8px 0; }
+
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; padding: .25rem 1.1rem .8rem; }
+.chips:empty { display: none; }
+.chip { font: 400 .8rem var(--mono); color: var(--bone); background: transparent; border: 1px solid rgba(243, 233, 210, .32); border-radius: 999px; padding: .38rem .8rem; cursor: pointer; transition: border-color .2s, background .2s; }
+.chip:hover { border-color: var(--spirit); background: color-mix(in srgb, var(--spirit) 14%, transparent); }
+
+.ask { display: flex; gap: .6rem; padding: .8rem 1.1rem 1.1rem; border-top: 1px solid rgba(243, 233, 210, .13); }
+.ask textarea { flex: 1; min-width: 0; resize: none; padding: .6rem .75rem; font: 400 .9rem / 1.45 var(--mono); color: var(--bone); background: rgba(0, 0, 0, .38); border: 1px solid rgba(243, 233, 210, .25); border-radius: 10px; }
+.ask textarea::placeholder { color: rgba(201, 189, 219, .7); }
+.ask button { align-self: stretch; min-width: 5.2rem; padding: 0 1.2rem; font: 400 1.35rem var(--display); letter-spacing: .02em; color: var(--ink); background: var(--marigold); border: 0; border-radius: 10px; cursor: pointer; transition: transform .15s, background .2s; }
+.ask button:hover { transform: translateY(-1px); background: #ffb04a; }
+.ask button.stop { background: var(--bone); }
+
+@keyframes bob { 0%, 100% { transform: translateY(-5px); } 50% { transform: translateY(8px); } }
+@keyframes blink { 0%, 95%, 100% { transform: scaleY(1); } 97.5% { transform: scaleY(.08); } }
+@keyframes flutter-l { from { transform: rotate(-10deg); } to { transform: rotate(14deg); } }
+@keyframes flutter-r { from { transform: rotate(10deg); } to { transform: rotate(-14deg); } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-7px) rotate(-1.5deg); } 40% { transform: translateX(7px) rotate(1.5deg); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+@keyframes wiggle { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(9deg) scale(1.08); } }
+@keyframes orbit { from { transform: translateY(-8px); } to { transform: translateY(10px); } }
+@keyframes flicker { 0%, 100% { transform: scale(1, 1) skewX(0); } 25% { transform: scale(.94, 1.08) skewX(-3deg); } 50% { transform: scale(1.05, .95) skewX(2deg); } 75% { transform: scale(.96, 1.05) skewX(-1deg); } }
+@keyframes glow { from { opacity: .55; transform: scale(.92); } to { opacity: 1; transform: scale(1.06); } }
+@keyframes sway { from { transform: rotate(-2.2deg); } to { transform: rotate(2.2deg); } }
+@keyframes drift { from { transform: translateX(-6%); } to { transform: translateX(6%); } }
+@keyframes summon { 0% { opacity: 0; transform: translateX(-50%) translateY(26px) scale(.86); filter: blur(10px); } 100% { opacity: 1; transform: translateX(-50%); filter: blur(0); } }
+@keyframes caret { 50% { opacity: 0; } }
+
+@media (max-width: 880px) {
+  .room { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "tombs" "chat"; }
+  .stage { min-height: 380px; border-radius: 160px 160px 12px 12px / 130px 130px 12px 12px; }
+  .spirit-wrap { height: 84%; }
+  .chat { height: auto; min-height: 460px; }
+  .log { max-height: 52vh; }
+  .top { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revenant, the Séance Room</title>
+<meta name="description" content="Ask dead programming languages anything. Runs on your own machine with open-weight models.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M5 16C5 8 10 3 16 3s11 5 11 13v12l-3-3-3 3-3-3-3 3-3-3-3 3-3-3-3 3Z' fill='%23f3e9d2'/%3E%3Ccircle cx='12' cy='15' r='2.4' fill='%231a0f2e'/%3E%3Ccircle cx='20' cy='15' r='2.4' fill='%231a0f2e'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<canvas id="petals" aria-hidden="true"></canvas>
+<div id="banner" aria-hidden="true"></div>
+
+<header class="top">
+  <div>
+    <h1>Revenant</h1>
+    <p class="tagline">Ask a dead language anything. It answers from your own machine.</p>
+  </div>
+  <ul class="status" aria-label="System status">
+    <li id="st-ollama" data-state="idle">Looking for Ollama</li>
+    <li id="st-model" data-state="idle"></li>
+    <li id="st-net" data-state="idle"></li>
+  </ul>
+</header>
+
+<main class="room">
+  <section class="stage" aria-label="The summoned spirit">
+    <div class="fog fog-a" aria-hidden="true"></div>
+    <div class="fog fog-b" aria-hidden="true"></div>
+    <div id="spirit" class="spirit-wrap"></div>
+    <div id="altar" class="altar"></div>
+  </section>
+
+  <nav class="tombs" id="tombs" aria-label="Choose a spirit"></nav>
+
+  <section class="chat" aria-label="Conversation">
+    <div id="log" class="log" role="log" aria-live="polite"></div>
+    <div id="chips" class="chips"></div>
+    <form id="form" class="ask" autocomplete="off">
+      <label class="sr" for="q">Your question</label>
+      <textarea id="q" rows="2" maxlength="1500" placeholder="Ask the spirit anything"></textarea>
+      <button id="send" type="submit">Ask</button>
+    </form>
+  </section>
+</main>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>
