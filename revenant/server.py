@@ -19,7 +19,7 @@ MAX_BODY = 64 * 1024      # bytes accepted in a chat request
 MAX_TURNS = 12            # most recent messages kept as context
 MAX_CHARS = 2000          # per message
 LOOPBACK = {"127.0.0.1", "localhost", "::1"}
-HEX = {"yellow": "#ffc233", "cyan": "#4fd8e8", "magenta": "#d56bff", "green": "#5be37d"}
+HEX = spirits.HEX
 CSP = ("default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; "
        "script-src 'self'; connect-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'none'")
 

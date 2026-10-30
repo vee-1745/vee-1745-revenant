@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; font-src data:; img-src data:">
+<title>__TITLE__</title>
+<meta name="description" content="__DESC__">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%23ff9a1f'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23d96a00'/%3E%3C/svg%3E">
+<style>
+__FONTS__
+:root {
+  --night: #150b2b; --night-2: #21104a; --plum: #3b1a5e; --plum-2: #4a2074;
+  --bone: #f3e9d2; --bone-dim: #c9bddb; --marigold: #ff9a1f; --ink: #1a0f2e;
+  --display: "Pirata One", Georgia, serif;
+  --voice: "IM Fell English", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { background: var(--night); }
+body {
+  margin: 0; min-height: 100vh; color: var(--bone); font-family: var(--voice); line-height: 1.5; overflow-x: hidden;
+  background: radial-gradient(120% 60% at 50% -8%, #3a1c7a 0%, var(--night-2) 42%, var(--night) 80%) fixed var(--night);
+}
+:focus-visible { outline: 3px solid var(--marigold); outline-offset: 3px; }
+
+.petals { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.petals span { position: absolute; bottom: -24px; width: 9px; height: 17px; border-radius: 50%; background: var(--marigold); opacity: 0;
+  transform: scale(var(--s)); animation: rise var(--t) linear var(--d) infinite; }
+.petals span:nth-child(3n) { background: #ffb83d; } .petals span:nth-child(3n+1) { background: #f6d33b; }
+
+.banner { position: relative; z-index: 2; height: 82px; overflow: hidden; display: flex; justify-content: center; gap: 6px; padding-top: 6px; }
+.banner::before { content: ""; position: absolute; left: 0; right: 0; top: 5px; height: 2px; background: rgba(243, 233, 210, .38); }
+.flag { flex: none; transform-origin: 50% 0; animation: sway 4.6s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -.35s); }
+.flag svg { display: block; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .35)); }
+
+.top { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: 1.2rem 20px 1.6rem; text-align: center; }
+h1 { margin: 0; font: 400 clamp(3.4rem, 10vw, 6.4rem) / .9 var(--display); letter-spacing: .01em; text-shadow: 0 0 34px rgba(255, 154, 31, .45); }
+.dedication { margin: 1rem auto 0; max-width: 34ch; font-size: 1.35rem; font-style: italic; }
+.lede { margin: 1rem auto 0; max-width: 52ch; color: var(--bone-dim); font-size: 1.1rem; }
+.count { margin: .9rem 0 0; font: 500 .9rem var(--mono); color: var(--marigold); min-height: 1.4em; }
+
+.altar { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 0 16px 20px; display: flex; flex-direction: column; align-items: center; }
+.shelf { position: relative; width: var(--w, 100%); margin: 0 auto; padding: 1.6rem 1.2rem 3.4rem; background: linear-gradient(var(--plum-2), var(--plum)); border: 2px solid rgba(255, 154, 31, .6); border-radius: 8px 8px 4px 4px; box-shadow: 0 16px 30px rgba(0, 0, 0, .4); }
+.shelf + .shelf { margin-top: -2px; }
+.shelf::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: 6px; height: 30px; background: __GARLAND__ repeat-x center / 30px 30px; }
+.shelf h2 { margin: 0; text-align: center; font: 400 2rem / 1 var(--display); }
+.shelf .note { margin: .3rem 0 1rem; text-align: center; color: var(--bone-dim); font-style: italic; }
+.row { display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 1.4rem; }
+.empty { max-width: 40ch; text-align: center; font-size: 1.3rem; font-style: italic; }
+
+.frame { --hue: var(--bone); position: relative; flex: 0 1 262px; display: flex; flex-direction: column; align-items: center; padding: 1.1rem 1rem .9rem; text-align: center;
+  background: linear-gradient(#26124f, #150a30); border: 2px solid color-mix(in srgb, var(--hue) 40%, transparent); border-radius: 131px 131px 10px 10px; transition: border-color .6s, box-shadow .6s; }
+.frame.is-lit { border-color: var(--hue); box-shadow: 0 0 0 1px var(--hue), 0 0 40px color-mix(in srgb, var(--hue) 42%, transparent); }
+.portrait { width: 92px; margin-top: .5rem; }
+.portrait svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .45)); }
+.frame h3 { margin: .8rem 0 0; font: 400 1.75rem / 1.05 var(--display); overflow-wrap: anywhere; }
+.dates { margin: .3rem 0 0; font: 400 .72rem / 1.4 var(--mono); color: var(--bone-dim); }
+.epitaph { margin: .8rem 0 0; font-size: 1.18rem; line-height: 1.45; font-style: italic; }
+.facts { width: 100%; margin: .9rem 0 0; font: 400 .74rem / 1.45 var(--mono); text-align: left; }
+.facts div { display: flex; gap: .6rem; padding: .32rem 0; border-top: 1px solid rgba(243, 233, 210, .14); }
+.facts dt { flex: none; width: 6.6em; color: var(--bone-dim); }
+
+.ancestors .row { gap: 1.1rem; }
+.ancestors .frame { flex: 0 1 176px; padding: .9rem .7rem .7rem; border-radius: 88px 88px 10px 10px; }
+.ancestors .portrait { width: 66px; }
+.ancestors h3 { font-size: 1.5rem; }
+.ancestors .epitaph { font-size: 1rem; }
+.facts dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+
+.candle { margin: auto 0 0; padding: .9rem 0 0; display: flex; flex-direction: column; align-items: center; gap: .15rem; color: var(--bone); background: none; border: 0; font: inherit; cursor: pointer; }
+.candle.fixed { cursor: default; }
+.candle svg { width: 40px; height: 74px; overflow: visible; }
+.candle .halo { fill: var(--hue); opacity: 0; filter: blur(7px); transition: opacity .6s; }
+.candle .ember { fill: var(--marigold); opacity: .6; transition: opacity .3s; }
+.candle:not(.fixed):hover .ember { opacity: 1; }
+.is-lit .candle .ember { opacity: 0; }
+.candle .flame { opacity: 0; transform-box: fill-box; transform-origin: 50% 100%; transition: opacity .35s; }
+.candle .cap { font: 400 .74rem var(--mono); color: var(--bone-dim); }
+.candle:not(.fixed):hover .cap { color: var(--bone); text-decoration: underline; }
+.is-lit .candle .flame { opacity: 1; animation: flicker 1.3s ease-in-out infinite; }
+.is-lit .candle .halo { opacity: .6; }
+.is-lit .candle .cap { color: var(--hue); }
+
+.thanks { position: relative; z-index: 1; margin: 1.4rem auto 0; max-width: 30ch; text-align: center; font: italic 1.6rem / 1.3 var(--voice); color: var(--marigold); animation: arrive 1.4s ease-out; }
+.thanks[hidden] { display: none; }
+body.all-lit .shelf { border-color: var(--marigold); box-shadow: 0 16px 30px rgba(0, 0, 0, .4), 0 0 60px rgba(255, 154, 31, .32); }
+body.all-lit h1 { text-shadow: 0 0 52px rgba(255, 154, 31, .85); }
+
+footer { position: relative; z-index: 1; max-width: 920px; margin: 2rem auto 0; padding: 0 20px 2.4rem; text-align: center; font: 400 .78rem / 1.6 var(--mono); color: var(--bone-dim); }
+
+@keyframes rise { 0% { opacity: 0; transform: translate(0, 0) scale(var(--s)) rotate(0); } 8% { opacity: .65; } 92% { opacity: .5; } 100% { opacity: 0; transform: translate(var(--w), -108vh) scale(var(--s)) rotate(260deg); } }
+@keyframes sway { from { transform: rotate(-2.2deg); } to { transform: rotate(2.2deg); } }
+@keyframes flicker { 0%, 100% { transform: scale(1, 1) skewX(0); } 25% { transform: scale(.94, 1.08) skewX(-3deg); } 50% { transform: scale(1.05, .95) skewX(2deg); } 75% { transform: scale(.96, 1.05) skewX(-1deg); } }
+@keyframes arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 760px) {
+  .shelf { width: 100%; padding-inline: .7rem; }
+  .frame { flex-basis: min(100%, 340px); }
+  .ancestors .frame { flex-basis: calc(50% - .6rem); }
+  .ancestors .epitaph { font-size: .92rem; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body data-key="__KEY__" data-total="__TOTAL__">
+<div class="petals" aria-hidden="true">__PETALS__</div>
+<div class="banner" aria-hidden="true">__BANNER__</div>
+<header class="top">
+  <h1>__TITLE__</h1>
+  __DEDICATION__
+  <p class="lede">__LEDE__</p>
+  <p class="count" id="count" aria-live="polite"></p>
+</header>
+<main class="altar">
+__SHELVES__
+</main>
+<p class="thanks" id="thanks" hidden>Every candle is lit. They are remembered.</p>
+<footer>Made with Revenant __VERSION__. This page is one file: it loads nothing from the internet and sends nothing anywhere.</footer>
+<script>
+(() => {
+  const body = document.body, key = 'revenant.ofrenda.' + body.dataset.key, total = +body.dataset.total;
+  const buttons = [...document.querySelectorAll('button.candle')];
+  const count = document.getElementById('count'), thanks = document.getElementById('thanks');
+  const ids = new Set(buttons.map((b) => b.dataset.id));
+  let lit = new Set();
+  try { lit = new Set(JSON.parse(localStorage.getItem(key) || '[]').filter((i) => ids.has(i))); } catch (e) { /* storage can be blocked */ }
+  function paint() {
+    buttons.forEach((b) => {
+      const on = lit.has(b.dataset.id);
+      b.setAttribute('aria-pressed', String(on));
+      b.closest('.frame').classList.toggle('is-lit', on);
+      b.querySelector('.cap').textContent = on ? 'Candle lit' : 'Light a candle';
+    });
+    count.textContent = total ? lit.size + ' of ' + total + ' candles lit' : '';
+    const all = total > 0 && lit.size >= total;
+    body.classList.toggle('all-lit', all);
+    thanks.hidden = !all;
+  }
+  buttons.forEach((b) => b.addEventListener('click', () => {
+    const id = b.dataset.id;
+    if (lit.has(id)) lit.delete(id); else lit.add(id);
+    try { localStorage.setItem(key, JSON.stringify([...lit])); } catch (e) { /* ignore */ }
+    paint();
+  }));
+  paint();
+})();
+</script>
+</body>
+</html>

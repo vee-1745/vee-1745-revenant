@@ -49,3 +49,6 @@ def current():
     if name not in names():
         name = DEFAULT_SPIRIT
     return load(name)
+
+
+HEX = {"yellow": "#ffc233", "cyan": "#4fd8e8", "magenta": "#d56bff", "green": "#5be37d"}

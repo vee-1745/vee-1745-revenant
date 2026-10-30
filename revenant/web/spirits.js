@@ -110,3 +110,23 @@ export function spiritSVG(name, label, hex) {
     `</g></g></g></svg>`
   );
 }
+
+const PORTRAIT_TINTS = ['#ffe9a8', '#c4f4fb', '#efd2ff', '#c8f8d5', '#ffd3df', '#d9e2ff'];
+
+// A small sleeping ghost with a marigold crown: the "photograph" on an ofrenda frame.
+export function ghostPortrait(seed, label) {
+  const tint = PORTRAIT_TINTS[Math.abs(seed) % PORTRAIT_TINTS.length];
+  const flower = (x, y, r) =>
+    `<circle cx="${x}" cy="${y}" r="${r}" fill="#ff9a1f" stroke="${INK}" stroke-width="2.5"/>` +
+    `<circle cx="${x}" cy="${y}" r="${r * 0.38}" fill="#d96a00"/>`;
+  return (
+    `<svg class="portrait-svg" viewBox="30 0 180 272" role="img" aria-label="${esc(label)}">` +
+    `<path d="${BODY}" fill="${tint}" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>` +
+    `<ellipse cx="82" cy="70" rx="15" ry="9" fill="#fff" opacity=".6" transform="rotate(-30 82 70)"/>` +
+    `<ellipse cx="68" cy="146" rx="10" ry="6" fill="#ff8fb0" opacity=".5"/><ellipse cx="172" cy="146" rx="10" ry="6" fill="#ff8fb0" opacity=".5"/>` +
+    `<path d="M76 118 q16 14 32 0 M132 118 q16 14 32 0" fill="none" stroke="${INK}" stroke-width="4.5" stroke-linecap="round"/>` +
+    `<path d="M108 158 q12 9 24 0" fill="none" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>` +
+    flower(92, 42, 11) + flower(120, 30, 12) + flower(148, 42, 11) +
+    `</svg>`
+  );
+}

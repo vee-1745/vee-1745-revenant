@@ -215,6 +215,93 @@ def cmd_warm(_args):
     return 0
 
 
+def cmd_ofrenda(args):
+    import collections
+    import fnmatch
+    import subprocess
+    from . import ofrenda
+
+    now = time.time()
+    found, unsafe = [], []
+    repos = [] if args.demo else ofrenda.find_repos(args.paths or ["~"], args.depth)
+    if args.demo:
+        found = ofrenda.demo_projects(now)
+    for r in repos:
+        try:
+            p = ofrenda.inspect(r, trust=args.trust_owners, now=now)
+        except ofrenda.Unsafe:
+            unsafe.append(r)
+            continue
+        if p is None or p["quietDays"] < args.months * 30.44:
+            continue
+        if any(fnmatch.fnmatch(p["name"].lower(), pat.lower()) for pat in args.exclude):
+            continue
+        found.append(p)
+    found.sort(key=lambda p: p["died"], reverse=True)
+    found = found[: args.max]
+    if args.demo:
+        print(f"  demo: {len(found)} fictional projects, no repositories were read")
+    else:
+        print(f"  looked at {len(repos)} repositories, {len(found)} gone quiet for {args.months:g}+ months")
+    if unsafe:
+        print(f"  skipped {len(unsafe)} that git does not trust (typical on /mnt/c). "
+              "If they are yours, add --trust-owners.")
+    if not found:
+        print("  nothing to remember. Try another folder, or a lower --months.")
+        return 1
+    for p in found:
+        print(f"    {p['name']:<28} last commit {p['died']}  ({p['commits']} commits)  {p['path']}")
+    if args.dry_run:
+        print("  dry run: nothing was written. The page will hold names, dates, counts and last commit "
+              "messages, never file paths.")
+        return 0
+
+    use_model = not args.no_model and not args.demo
+    if use_model:
+        if not ollama.is_up():
+            print("  Ollama is not running. Start it, or use --no-model for plain templates.", file=sys.stderr)
+            return 1
+        if args.model not in ollama.list_models():
+            print(f"  {args.model} is not installed: ollama pull {args.model}  (or pass --model)", file=sys.stderr)
+            return 1
+    rejects = collections.Counter()
+    for p in ([] if args.demo else found):
+        if args.no_last_words:
+            p["lastWords"], p["earlier"] = None, []
+        try:
+            r = ofrenda.remember(p, args.model, args.attempts, use_model, True, rejects)
+        except ollama.OllamaError as e:
+            print(f"  the model stopped answering ({e}); finishing with templates")
+            use_model = False
+            r = ofrenda.remember(p, args.model, args.attempts, False, True, rejects)
+        p.update(r)
+        mark = "✓" if r["by"] == "model" else "~"
+        print(f"  {mark} {p['name']}  ({r['by']}, {r['tries']} {'try' if r['tries'] == 1 else 'tries'})")
+
+    keep = ("name", "seed", "born", "died", "commits", "langs", "lastWords", "cause", "epitaph",
+            "offering", "lived", "quiet")
+    stats = {"model_written": sum(p["by"] == "model" for p in found),
+             "template": sum(p["by"] == "template" for p in found),
+             "tries": sum(p["tries"] for p in found), "rejected": dict(rejects)}
+    data = {"generated": time.strftime("%Y-%m-%d"), "model": args.model if use_model or stats["model_written"] else None,
+            "demo": args.demo, "projects": [{k: p[k] for k in keep} for p in found], "elders": ofrenda.elders(), "stats": stats}
+    target = ofrenda.build_site(data, args.out)
+    if args.demo:
+        print(f"\n  {len(found)} fictional sample remembrances")
+    else:
+        print(f"\n  {len(found)} remembrances: {stats['model_written']} written by {args.model}, "
+              f"{stats['template']} from the template. Rejected drafts: {dict(rejects) or 'none'}")
+    print(f"  built {target} ({target.stat().st_size // 1024} KB, one file, no internet needed)")
+    try:
+        win = subprocess.run(["wslpath", "-w", str(target.resolve())], capture_output=True, text=True, timeout=5).stdout.strip()
+        if win:
+            print(f"  open in Windows: {win}")
+    except (OSError, subprocess.SubprocessError):
+        pass
+    print("  Review it before you publish it: it contains project names and last commit messages.")
+    return 0
+
+
 def cmd_hook(args):
     path = HOOK_DIR / f"hook.{args.shell}"
     print(path.read_text().replace("__REVENANT_ROOT__", str(ROOT)))
@@ -265,6 +352,22 @@ def build_parser():
     sc.add_argument("--host", default="127.0.0.1", help="bind address (keep it loopback)")
     sc.add_argument("--port", type=int, default=8666)
     sc.set_defaults(fn=cmd_seance)
+
+    o = sub.add_parser("ofrenda", help="build an altar page for your abandoned git projects")
+    o.add_argument("paths", nargs="*", help="folders to scan (default: your home folder)")
+    o.add_argument("--months", type=float, default=6, help="quiet for at least this long (0 = every repo)")
+    o.add_argument("--depth", type=int, default=4, help="how deep to look for repositories")
+    o.add_argument("--out", default="ofrenda-out", help="output folder; the page is <out>/index.html")
+    o.add_argument("--model", default="qwen2.5:7b")
+    o.add_argument("--attempts", type=int, default=3)
+    o.add_argument("--max", type=int, default=48, help="most projects on the altar")
+    o.add_argument("--exclude", action="append", default=[], metavar="NAME", help="skip repos by name (wildcards ok)")
+    o.add_argument("--no-last-words", action="store_true", help="leave commit messages off the page")
+    o.add_argument("--no-model", action="store_true", help="plain templates, no Ollama needed")
+    o.add_argument("--trust-owners", action="store_true", help="read repos git thinks are owned by someone else")
+    o.add_argument("--dry-run", action="store_true", help="list what would be included and stop")
+    o.add_argument("--demo", action="store_true", help="fictional sample projects instead of your repos (safe to publish)")
+    o.set_defaults(fn=cmd_ofrenda)
 
     h = sub.add_parser("hook", help="print the shell hook (eval it in your rc file)")
     h.add_argument("shell", choices=["bash", "zsh"])

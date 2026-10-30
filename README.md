@@ -5,6 +5,8 @@ Dead programming languages haunt your terminal. Everything runs locally on open-
 ## Quick start (WSL / Linux)
 
 ```bash
+git clone https://github.com/vee-1745/vee-1745-revenant && cd vee-1745-revenant
+
 # 1. a local model
 ollama pull qwen2.5:3b   # COBOL, Lisp
 ollama pull qwen2.5:7b   # Fortran, Perl (they need the bigger model)
@@ -17,7 +19,7 @@ python3 ghost.py summon cobol
 python3 ghost.py demo
 
 # 4. let it haunt your shell (add to ~/.bashrc, then open a new terminal)
-eval "$(python3 /full/path/to/revenant/ghost.py hook bash)"
+echo "eval \"\$(python3 $PWD/ghost.py hook bash)\"" >> ~/.bashrc   # run from this folder
 ```
 
 After the hook is loaded, `ghost` is available as a command:
@@ -43,6 +45,7 @@ revenant/ollama.py       stdlib Ollama client
 revenant/spirits/*.toml  one persona per dead language (system prompt + few-shot examples)
 revenant/hooks/          bash / zsh shell hooks
 revenant/server.py       the Séance Room's local server (stdlib, streams over SSE)
+revenant/ofrenda.py       scans git repos, writes epitaphs, builds the altar page
 revenant/web/            the Séance Room UI: SVG spirits, altar, chat (no build step, fonts bundled)
 ```
 
@@ -63,3 +66,19 @@ python3 ghost.py seance        # then open http://localhost:8666
 ```
 
 Pick a spirit, ask it anything, and watch it talk: its mouth moves with every token streamed from your local model. The page loads nothing from the internet (fonts are bundled, CSP is `default-src 'self'`), so it works with the Wi-Fi off, and the status bar says so. The server binds to loopback only and rejects foreign Host and Origin headers.
+
+## The Ofrenda
+
+On Día de los Muertos families build an *ofrenda*, an altar for the people they remember. This one is for the projects you stopped working on.
+
+```bash
+python3 ghost.py ofrenda ~/projects --dry-run      # list what would be included, write nothing
+python3 ghost.py ofrenda ~/projects                # -> ofrenda-out/index.html
+python3 ghost.py ofrenda --demo --out site         # fictional samples, safe to publish
+```
+
+It finds git repositories that have been quiet for 6+ months (`--months 0` for all), reads their history, and asks a local model (`qwen2.5:7b`) for a short epitaph and an offering. The *cause of death* ("Died mid-refactor", "Died with 2 unsaved changes") comes from plain heuristics on the real git facts, never from the model. Every epitaph is fact-checked: a digit that is not in the repo's facts rejects the draft, and after three rejected drafts the page uses a plain template and says so in its footer.
+
+The output is one HTML file with the fonts, art and scripts inside. It loads nothing from the internet, renders all repo text as plain text (a hostile commit message cannot inject anything), and contains no file paths. You light a candle for each project by clicking it.
+
+Safe by default: repositories are read, never modified (`GIT_OPTIONAL_LOCKS=0`); repos git does not trust (common on `/mnt/c`) are skipped unless you pass `--trust-owners`; `--exclude NAME` and `--no-last-words` keep things off the page. Review the page before you publish it, since it holds project names and last commit messages.
