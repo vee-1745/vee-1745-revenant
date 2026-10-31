@@ -53,7 +53,7 @@ Adding a spirit is one TOML file: copy `cobol.toml`, change the voice, done.
 
 ## How it picks a model
 
-Each spirit names its own model in its `.toml`, chosen from `ghost bench` data: COBOL and Lisp pass the persona validators on the 3B model (~0.3-0.4s per whisper), while Fortran and Perl need the 7B model. `ghost summon <name> --model <m>` overrides it until the next plain `summon`. `ghost doctor` checks that every model the spirits need is installed.
+Each spirit names its own model in its `.toml`, chosen from `ghost bench` data: COBOL and Lisp pass the persona validators on the 3B model (~0.6-0.8s per attempt), while Fortran and Perl need the 7B model. `ghost summon <name> --model <m>` overrides it until the next plain `summon`. `ghost doctor` checks that every model the spirits need is installed.
 
 ## Never blocks your prompt
 
